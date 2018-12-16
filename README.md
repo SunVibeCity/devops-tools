@@ -9,7 +9,7 @@ create images for nginx-vhost
 ```
 $ cd nginx-vhost
 $ docker build -t nginx-vhost .
-$ docker tag sunvibecity/nginx-vhost
+$ docker tag nginx-vhost sunvibecity/nginx-vhost
 $ docker push sunvibecity/nginx-vhost
 ```
 
