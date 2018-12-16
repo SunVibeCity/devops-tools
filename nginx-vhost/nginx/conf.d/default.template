@@ -1,0 +1,56 @@
+#########################!! exposed to public !!###########################
+#
+# default
+#
+
+server {
+    listen  80  default_server;
+#   listen  443 ssl;
+    server_name _;
+    add_header  Xx-Remote-Addr  ${DOLLAR}remote_addr always;
+    add_header  Xx-Forwarded-For  ${DOLLAR}proxy_add_x_forwarded_for always;
+    add_header  Xx-Vhost  _default_server always;
+#    ssl_certificate /etc/nginx/ssl/mt.lzd.co.crt;
+#    ssl_certificate_key /etc/nginx/ssl/mt.lzd.co.key;
+    location / {
+        root   /usr/share/nginx/html/public-200;
+        index  index.html;
+    }
+    location /health_check {
+        root   /usr/share/nginx/html/public-200;
+        default_type application/json;
+    }
+    location ~* \.(?:jpg|jpeg|gif|png|ico|css|js)${DOLLAR} {
+        expires 1y;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+}
+
+
+
+#########################!! exposed to public !!###########################
+#
+# api.lazada.com
+#
+
+server {
+    listen  80;
+#    listen  443 ssl;
+    server_name api.lazada.com, *api.lazada.com;
+    add_header  Xx-Remote-Addr  ${DOLLAR}remote_addr always;
+    add_header  Xx-Forwarded-For  $.{DOLLAR}proxy_add_x_forwarded_for always;
+    add_header  Xx-Vhost  _bender.lazada.com always;
+#    ssl_certificate /etc/nginx/ssl/mt.lzd.co.crt;
+#    ssl_certificate_key /etc/nginx/ssl/mt.lzd.co.key;
+    location / {
+        proxy_read_timeout 30;
+        proxy_pass http://${DOCKER_HOST}:8080;
+    }
+    location ~* \.(?:jpg|jpeg|gif|png|ico|css|js)${DOLLAR} {
+        expires 1y;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+}
+############################################################################
