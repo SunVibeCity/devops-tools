@@ -29,6 +29,28 @@ server {
 
 #########################!! exposed to public !!###########################
 #
+# www.sunvibe.city
+#
+
+server {
+    listen  80;
+#    listen  443 ssl;
+    server_name sunvibe.city www.sunvibe.city;
+    add_header  Xx-Remote-Addr  ${DOLLAR}remote_addr always;
+    add_header  Xx-Forwarded-For  ${DOLLAR}proxy_add_x_forwarded_for always;
+    add_header  Xx-Vhost  _api.sunvibe.city always;
+#    ssl_certificate /etc/nginx/ssl/sunvibe.city.crt;
+#    ssl_certificate_key /etc/nginx/ssl/sunvibe.city.key;
+    location / {
+        proxy_read_timeout 30;
+        proxy_pass http://${DOCKER_HOST}:8081;
+    }
+}
+############################################################################
+
+
+#########################!! exposed to public !!###########################
+#
 # api.sunvibe.city
 #
 
@@ -39,11 +61,33 @@ server {
     add_header  Xx-Remote-Addr  ${DOLLAR}remote_addr always;
     add_header  Xx-Forwarded-For  ${DOLLAR}proxy_add_x_forwarded_for always;
     add_header  Xx-Vhost  _api.sunvibe.city always;
-#    ssl_certificate /etc/nginx/ssl/mt.lzd.co.crt;
-#    ssl_certificate_key /etc/nginx/ssl/mt.lzd.co.key;
+#    ssl_certificate /etc/nginx/ssl/sunvibe.city.crt;
+#    ssl_certificate_key /etc/nginx/ssl/sunvibe.city.key;
     location / {
         proxy_read_timeout 30;
         proxy_pass http://${DOCKER_HOST}:8080;
+    }
+}
+############################################################################
+
+
+#########################!! exposed to public !!###########################
+#
+# metrics.sunvibe.city
+#
+
+server {
+    listen  80;
+#    listen  443 ssl;
+    server_name metrics.sunvibe.city *.metrics.sunvibe.city;
+    add_header  Xx-Remote-Addr  ${DOLLAR}remote_addr always;
+    add_header  Xx-Forwarded-For  ${DOLLAR}proxy_add_x_forwarded_for always;
+    add_header  Xx-Vhost  _api.sunvibe.city always;
+#    ssl_certificate /etc/nginx/ssl/sunvibe.city.crt;
+#    ssl_certificate_key /etc/nginx/ssl/sunvibe.city.key;
+    location / {
+        proxy_read_timeout 30;
+        proxy_pass http://${DOCKER_HOST}:3000;
     }
 }
 ############################################################################
